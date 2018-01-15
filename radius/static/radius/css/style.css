@@ -1,0 +1,134 @@
+.rotateimg90{
+
+transform: rotate(90deg);
+}
+
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	/*width:100%;*/
+}
+body {
+	line-height: 1;
+}
+#spacer{
+	background-color: #222222;
+	
+}
+ol, ul, nav {
+	list-style: none;
+}
+
+
+/* remember to define focus styles! */
+:focus {
+	outline: 0;
+}
+
+/* remember to highlight inserts somehow! */
+ins {
+	text-decoration: none;
+}
+del {
+	text-decoration: line-through;
+}
+a {
+
+    text-decoration: none;
+    color: #fff;
+
+}
+
+body {
+
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: 300;
+}
+#globalWrapper{
+		overflow-y: auto;
+}
+#logo{background:url(logo.png) no-repeat;width:118px; height:43px;display:block;}
+
+#switcher {
+	height: 60px;
+	background: #4b4b4e;
+	z-index: 99999;
+	position: fixed;
+	width: 17%;
+	padding:0;
+  /*border-bottom: 1px solid #ccc;*/
+}
+
+#page_footer{
+	font-size: 30px;
+	color: red;
+}
+#iframe {
+
+    margin: 0px;
+	width: 100%; 
+	height: 100%;
+
+
+}
+/*CSS.css imports*/
+/* latin-ext */
+@font-face {
+  font-family: 'Libre Baskerville';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Libre Baskerville Bold'), local('LibreBaskerville-Bold'), url(https://fonts.gstatic.com/s/librebaskerville/v4/kH7K4InNTm7mmOXXjrA5v-Ql1o_0qyP5Uo8lbNkQAd8.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Libre Baskerville';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Libre Baskerville Bold'), local('LibreBaskerville-Bold'), url(https://fonts.gstatic.com/s/librebaskerville/v4/kH7K4InNTm7mmOXXjrA5v6y7YSlLHrWsjpD3RcrnyFM.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
+#life_story{
+	font-size: 18px;
+	color: red;
+	font-family: "Times New Roman", Times, serif;
+}
+#main_footer{
+	height: 300px;
+	position: relative;
+	width: 100%;
+	background-color: black;
+	font-size: 15px;
+}
+.link_header{
+	color: white;
+	font-size: 15px;
+}
+.outside_link{
+	color: white;
+	font-size: 15px;
+}
+.light{
+	background-color: #222222;
+}
+p.article_header{
+	color: red;
+	font-size: 12px;
+}
+p.article_text{
+	color: white;
+	font-size: 12px;
+}
+.page_footer{
+	color: red;
+}
+p.mainset{
+	color: white;
+	
+	
+}
+p.offset{
+	color: yellow;
+	
+}

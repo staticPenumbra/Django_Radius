@@ -1,0 +1,162 @@
+{% extends parent_template|default:"radius/base_radius.html" %}
+
+{% block title %}
+{{ block.super }} - Radius ver.1.63 for Django
+{% endblock %}
+{% block blogheaders %}
+{% load static %}
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width">
+		<link href="{% static "blog/css/style.css" %}" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="{% static "blog/common/bootstrap.css" %}">
+		<script src="{% static "blog/common/modernizr-2.js" %}" type="text/javascript"></script>
+		<script src="{% static "blog/common/jquery-3.2.1.min.js" %}" type="text/javascript"></script>
+		<!--iOS expanding iframe fix-->
+		<script>
+			var iframe = $('#RearScreen');
+			function resizeIframe() {
+				var viewer = document.getElementById( 'RearScreen' );
+				var iframe = $('#RearScreen');
+				if ( /(iPad|iPhone|iPod)/g.test( navigator.userAgent ) ) {
+					viewer.setAttribute( 'scrolling', 'no' );
+					$('#RearScreen').attr('height', '150px');
+					$('#RearScreen').attr('width', viewer.parentElement.clientWidth);
+				}else{
+					var height = document.documentElement.clientHeight;
+					var width = document.documentElement.clientWidth;
+					height = (height < 0) ? 0 : height;
+					$('#RearScreen').attr('height', ((height + 'px')/2));
+					width = (width < 0) ? 0 : width;
+					$('#RearScreen').attr('width', (width + 'px'));
+				}
+			}
+			// .onload doesn't work with IE8 and older.
+			if (iframe.attachEvent) {
+				iframe.attachEvent("onload", resizeIframe);
+			} else {
+				iframe.onload=resizeIframe;
+			}
+			window.onload = resizeIframe;
+			window.onresize = resizeIframe;
+		</script>
+{% endblock %}	
+{% block radengine %}
+{% load static %}
+{% endblock %}
+{% block headerFrame %}
+{% load static %}
+    <script src="{% static "radius/js/AIController.js" %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static "radius/js/Audio.js" %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static "radius/js/Entity.js" %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static "radius/js/Event.js" %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static "radius/js/Input.js" %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static "radius/js/Menu.js" %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static "radius/js/Updater.js" %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static "radius/js/ScreenMap.js" %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static "radius/js/Stage.js" %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static "radius/js/EntityManager.js" %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static "radius/js/EventManager.js" %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static "radius/js/ResourceManager.js" %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static "radius/js/Trigger.js" %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static "radius/js/AudioController.js" %}" type="text/javascript" charset="utf-8"></script>
+    
+    <script>
+    var EngineHandle = null;
+    window.onload = function(){
+    //-----------Preloading Resources-----------------------------------------
+    var FileRoot = "{% static "" %}"//location.href.substring(0,location.href.lastIndexOf("/")+1);
+    //-----------Start Main Game Engine on Stage 1---------------------------------------
+    EngineHandle = new EventManager(this.GetFrontCanvas(), this.GetFrontCanvasContext(), this.GetRearCanvas(), this.GetRearCanvasContext(), FileRoot, this.GetAudioDevice(), window);
+	EngineHandle.StartEngine();
+    //Bind Event Handlers and Inputs
+    this.BindHandlers();
+    setInterval(EngineLoop, 1000/30);
+    }
+    //The Main Game Loop fuction
+    function EngineLoop(){
+		//-----------MAIN APPLICATION LOOP-----------------------------------------------
+		EngineHandle.RunCycle();
+    }
+    function BindHandlers(){
+		//Keyboard
+		window.addEventListener('keydown', kDown, false);
+		window.addEventListener('keyup', kUp, false);  
+		//Mouse
+		GetFrontCanvas().addEventListener('mousemove', mMove, false);
+		GetRearCanvas().addEventListener('mousemove', mMove, false);
+		GetFrontCanvas().addEventListener('click', mClick, false);
+		GetRearCanvas().addEventListener('click', mClick, false);
+    }
+	function mClick(e){
+		EngineHandle.mouseClick(e);
+	}
+	function mMove(e){
+		EngineHandle.mouseMove(e);
+	}
+    function kDown(e){
+		EngineHandle.keyDown(e.keyCode);
+    }
+    function kUp(e){
+		EngineHandle.keyUp(e.keyCode);
+    }  
+	function GetAudioDevice(){
+		var a = document.getElementById('AudioController1');
+		var b = document.getElementById('AudioController2');
+		var c = document.getElementById('AudioController3');
+		var d = document.getElementById('AudioController4');
+		var e = document.getElementById('AudioController5');
+		var f = document.getElementById('AudioController6');
+		var ABC = new Array();
+		ABC.push(a);
+		ABC.push(b);
+		ABC.push(c);
+		ABC.push(d);
+		ABC.push(e);
+		ABC.push(f);
+		return(ABC);
+	}
+	function GetFrontCanvas(){
+		var c = document.getElementById('FrontScreen');
+		return(c);
+    }
+    function GetFrontCanvasContext(){
+		var ctx = GetFrontCanvas().getContext('2d');
+		return(ctx);
+    }    
+    function GetRearCanvas(){
+		var c = document.getElementById('RearScreen');
+		return(c);
+    }
+    function GetRearCanvasContext(){
+		var bctx = GetRearCanvas().getContext('2d');
+		return(bctx);
+    }    
+    
+    </script>
+	<audio id ="AudioController1" loop="loop">
+			Your browser does not support the audio element.
+	</audio>
+	<audio id ="AudioController2" loop="loop">
+			Your browser does not support the audio element.
+	</audio>
+    <audio id ="AudioController3" loop="loop">
+			Your browser does not support the audio element.
+	</audio>
+	<audio id ="AudioController4" loop="loop">
+			Your browser does not support the audio element.
+	</audio>
+	<audio id ="AudioController5" loop="loop">
+			Your browser does not support the audio element.
+	</audio>
+	<audio id ="AudioController6" loop="loop">
+			Your browser does not support the audio element.
+	</audio>
+	<canvas id="FrontScreen" scrolling="yes">
+			Your browser doesn't include support for the canvas tag.
+    </canvas>
+	<canvas id="RearScreen" scrolling="yes">
+			Your browser doesn't include support for the canvas tag.
+    </canvas>
+{% endblock %}

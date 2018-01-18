@@ -7,7 +7,7 @@
  *
  * This file contains the ScreenMap object a data representation of a screen
  *
- * @author Clayton Burnett <clay@codequest.co>
+ * @author Clayton Burnett <the82professional@hotmail.com>
  */
 /**
  * ###############################################################################################################

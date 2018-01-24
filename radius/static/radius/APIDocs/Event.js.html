@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Event.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Event.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*----------------------------------------------------------------------------------------------------------
+::“Copyright 2013 Clayton Burnett” 
+::This program is distributed under the terms of the GNU General Public License
+------------------------------------------------------------------------------------------------------------*/
+/**
+ * @fileOverview
+ *
+ * This file contains the main Event object definition encapsulating any application event
+ *
+ * @author Clayton Burnett &lt;clay@codequest.co>
+ */
+/**
+ * ###############################################################################################################
+ *                                              Event
+ */
+/**
+ * @class
+ * Class modeling an Event
+ *
+ * @description
+ * All in-application events are modeled as a generic event type and then passed to the event manager
+ **/
+ /**
+ * Defines an in application event
+ * @constructor
+ */
+var EngineEvent = function(Type, Args) {
+	this.ApplyFrom = null;
+	this.ApplyTo = null;
+	this.EventType = Type; //This is the type of event to switch handler based upon
+	this.InstanceAtX = null;
+	this.InstanceAtY = null;
+	this.ApplicationStop = null; //For errors, symbolizes a critical system error(To be avoided)
+	this.args = Args; //Arguments to the event handler
+}
+//---------------------------------------------------------------------------GET ACCESSORS---------------------------------------------------
+/**
+* Retrieves the event arguments
+* @return {Array[]} Stored string arguments for the event
+*/
+EngineEvent.prototype.GetArg = function() {
+    return(this.args);
+}
+/**
+* Accessor method to get the type of event
+* @return {String} Returns Type String of the object
+*/
+EngineEvent.prototype.GetType = function() {
+    return(this.EventType);
+}
+/**
+* keyUp Event
+* @return {KeyCode} Returns keycode passed into it for clojure
+*/
+EngineEvent.prototype.keyUp = function() {
+     return(this.args);
+}
+/**
+* keyDown Event
+* @return {KeyCode} Returns keycode passed into it for clojure
+*/
+EngineEvent.prototype.keyDown = function() {
+     return(this.args);
+}
+//--------------------------------------------------------------------------SET ACCESSORS----------------------------------------------------
+//--------------------------------------------------------------------------UTILITY FUNCTIONS------------------------------------------------
+/**
+* Specifies how different events should behave when they have their execute methods called
+*/
+EngineEvent.prototype.Execute = function() {
+    switch(this.EventType){
+        //switch handler based upon the type of event
+        //Specifies a render event
+        case "render":
+			return("render");
+        break;
+		case "trigger":	
+		break;
+        case "pauseAudio":
+			alert("Pause Audio");
+        break;
+        case "playAudio":
+			alert("Play Audio");
+        break;
+        case "displaymenu":
+			alert("Display Menu");
+        break;
+        case "unpauseinterrupt":
+			alert("unpauseinterrupt");
+        break;
+        case "pauseinterrupt":
+			alert("pauseinterrupt");
+        break;
+        case "error":
+			alert("Application error " + this.args);
+        break;
+        case "create":
+			return(this.CreateEntity());
+        break;
+		case "destroy":
+			return("killme");
+        break;
+        case "shoot":
+			alert(this.ApplyFrom + " Shooting");
+        break;
+        case "collision":
+			alert("Collision" + this.ApplyFrom + " " + this.ApplyTo);
+        break;
+        case "keyUp":
+			return(this.keyUp());
+        break;
+        case "keyDown":
+			return(this.keyDown());
+        break;
+        default:
+			alert("Not a valid event type in Event object");
+        break;
+    }	
+}
+/**
+* Create and return an Entity object
+* @param {String} TYPE The current entity type to create
+* @param {Integer} xPos The x position to create the object at
+* @param {Integer} yPos The y position to create the object at
+* @param {Image} SpriteSheet The currently loaded sprite sheet for the entity
+* @param {AIController | Input} Controller The current entities controller Player or AI
+* @return {Entity} Returns the Entity created
+*/
+EngineEvent.prototype.CreateEntity = function(TYPE, xPos, yPos, SpriteSheet, Controller) {
+    var temp = new Entity(TYPE, xPos, yPos, SpriteSheet, Controller);
+    return(temp);
+}
+/**
+* Function to display the event output(Simply output a text representation of everything in the object)
+* Create and return an Entity object
+*/
+EngineEvent.prototype.Display = function() {
+	alert(this.ApplyFrom + " \n" + this.ApplyTo + " \n" + this.EventType + " \n" + this.InstanceAtX + " \n" + this.InstanceAtY + " \n" + this.ApplicationStop + " \n" + this.args);
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AIController.html">AIController</a></li><li><a href="ApplicationMenu.html">ApplicationMenu</a></li><li><a href="Audio.html">Audio</a></li><li><a href="AudioController.html">AudioController</a></li><li><a href="Debugger.html">Debugger</a></li><li><a href="EngineEvent.html">EngineEvent</a></li><li><a href="Entity.html">Entity</a></li><li><a href="EntityManager.html">EntityManager</a></li><li><a href="EventManager.html">EventManager</a></li><li><a href="Input.html">Input</a></li><li><a href="ResourceManager.html">ResourceManager</a></li><li><a href="ScreenMap.html">ScreenMap</a></li><li><a href="Stage.html">Stage</a></li><li><a href="Trigger.html">Trigger</a></li><li><a href="Updater.html">Updater</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 24 2018 11:40:32 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

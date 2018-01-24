@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Audio.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Audio.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*----------------------------------------------------------------------------------------------------------
+::“Copyright 2013 Clayton Burnett” 
+::This program is distributed under the terms of the GNU General Public License
+------------------------------------------------------------------------------------------------------------*/
+/**
+ * @fileOverview
+ *
+ * This file contains the main object implementing audio controls for the HTML5 Audio player
+ *
+ * @author Clayton Burnett &lt;clay@codequest.co>
+ */
+ 
+/**
+ * ###############################################################################################################
+ *                                              Audio
+ */
+/**
+ * @class
+ * Class modeling an Audio element
+ *
+ * @description
+ * The current audio output tag is operated through this Audio class
+ **/
+ /**
+ * @constructor
+ */
+var Audio = function(TVZ_AudioFile, TVZ_Repeating, TVZ_Volume, TVZ_Duration, TVZ_Format) {
+    //Default Constructor
+	this.AudioFile = TVZ_AudioFile;
+	this.RepeatingFlag = TVZ_Repeating;
+	this.Volume = TVZ_Volume;
+	this.Duration = TVZ_Duration;
+	this.Format = TVZ_Format;
+	this.Controller = null;
+	this.Playing = false;
+}
+//-------------------------------------------------------------SET METHODS---------------------------
+/**
+* Set Repeat flag 
+* @param {Boolean} Repeat Sets the Audio clip to either repeat or not repeat
+*/
+Audio.prototype.SetRepeating = function(Repeat){
+	if(Repeat != null){
+       this.RepeatingFlag = Repeat;
+	}
+}
+/**
+* Sets the current controller of the Audio object takes in an &lt;audio> tag id string
+* @param {AudioTagHandle} Controller Handle to the current HTML5 audio element 
+*/
+Audio.prototype.SetController = function(Controller){
+        this.Controller = Controller;
+}
+/**
+* Set Timeout
+* @param {Array[]} MinutesAndSeconds Sets the Audio clip timeout
+*/
+Audio.prototype.SetClipTimeout = function(MinutesAndSeconds){
+	if(MinutesAndSeconds != null &amp;&amp; MinutesAndSeconds[0] != null &amp;&amp; MinutesAndSeconds[1] != null){
+       this.Duration = MinutesAndSeconds;
+	}
+}
+//----------------------------------------------------------GET METHODS-------------------------------
+/**
+* Get Timeout
+* @returns {Array[]} Gets the Audio clip timeout
+*/
+Audio.prototype.GetClipTimeout = function(){
+	if(this.Duration[0] != null &amp;&amp; this.Duration[1] != null){
+       return(this.Duration);
+	}
+}
+/**
+* Get the Audio file string
+* @returns {String} Returns the AudioFile path contained in the audio object
+*/
+Audio.prototype.GetFilePath = function(){
+        return(this.AudioFile);
+}
+/**
+* Gets the current controller of the Audio object 
+* @returns {AudioController} The controller registered with the current Audio object
+*/
+Audio.prototype.GetController = function(){
+    if(this.Controller != null){
+        return(this.Controller);
+    }
+}
+//-----------------------------------------------------------UTILITY METHODS----------------------------------
+/**
+* Pauses the current audio associated with the audio object
+*/
+Audio.prototype.Pause = function() {
+    if(this.Controller != null){   
+		this.Controller.pause();
+	}
+}
+/**
+* Plays the current audio associated with the audio object
+*/
+Audio.prototype.Play = function() {
+    if(this.Controller != null){   
+        if(this.RepeatingFlag == true){
+            this.Controller.setAttribute("loop", "loop" );
+        }
+		if(this.RepeatingFlag == false){
+			this.Controller.loop = false;
+		}
+	this.Controller.setAttribute("src", this.AudioFile);
+	this.Controller.play();
+	}
+}
+/**
+* Stops audio associated with the object on the associated controller
+* @param {AudioTagHandle} Controller Handle to the current HTML5 audio element 
+*/
+Audio.prototype.Stop = function(Controller) {
+    if(this.Controller != null){
+	document.getElementById(this.Controller).pause();
+	}
+}
+/**
+* Restarts the playing audio associated with the object on the current controller
+*/
+Audio.prototype.Repeat = function() {
+    if(this.Controller != null){
+    document.getElementById(this.Controller).currentTime = 0;
+    }
+}
+/**
+* Skips to the current time value in seconds given by "Value"
+* @param {Float} Value The track starting position in seconds
+*/
+Audio.prototype.SkipTo = function(Value) {
+    if(this.Controller != null){
+        try{
+            document.getElementById(this.Controller).currentTime = Value;
+        }
+        catch(err){
+        var txt="Audio.js code: 0x101Z|-|4x: Invalid time value. Please enter the number of seconds in decimal\n\n";
+            txt+="Click OK to continue.\n\n";
+            alert(txt);
+        }
+    }	
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AIController.html">AIController</a></li><li><a href="ApplicationMenu.html">ApplicationMenu</a></li><li><a href="Audio.html">Audio</a></li><li><a href="AudioController.html">AudioController</a></li><li><a href="Debugger.html">Debugger</a></li><li><a href="EngineEvent.html">EngineEvent</a></li><li><a href="Entity.html">Entity</a></li><li><a href="EntityManager.html">EntityManager</a></li><li><a href="EventManager.html">EventManager</a></li><li><a href="Input.html">Input</a></li><li><a href="ResourceManager.html">ResourceManager</a></li><li><a href="ScreenMap.html">ScreenMap</a></li><li><a href="Stage.html">Stage</a></li><li><a href="Trigger.html">Trigger</a></li><li><a href="Updater.html">Updater</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 24 2018 11:40:32 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

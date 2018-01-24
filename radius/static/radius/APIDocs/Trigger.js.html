@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Trigger.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Trigger.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*----------------------------------------------------------------------------------------------------------
+::“Copyright 2013 Clayton Burnett” 
+::This program is distributed under the terms of the GNU General Public License
+------------------------------------------------------------------------------------------------------------*/
+/**
+ * @fileOverview
+ *
+ * This file contains the definition for a trigger object
+ *
+ * @author Clayton Burnett &lt;clay@codequest.co>
+ */
+ 
+/**
+ * ###############################################################################################################
+ *                                              Trigger
+ */
+/**
+ * @class
+ * Class modeling a event Trigger
+ *
+ * @description
+ * Event Triggers are walkover and scripted things that happen
+ **/
+ /**
+ * @constructor
+ */
+var Trigger = function(Type, FireOnce, Position, Dimensions) {
+	this.Dimensions = Dimensions; //Dimension dimension array for the trigger (width, height)
+	this.Position = Position; //Position array for the trigger (x, y)
+	this.FireOnce = FireOnce; //Fireonce boolean flag true=once false=infinite
+	this.Type = Type; //Text string for the trigger typep
+	this.TrippedBy = null;
+	this.UL = Position;
+	this.UR = new Array(this.UL[0] + this.Dimensions[0], this.UL[1]);
+	this.LL = new Array(this.UL[0], this.UL[1] + this.Dimensions[1]);
+	this.LR = new Array(this.UL[0] + this.Dimensions[0], this.UL[1] + this.Dimensions[1]);
+}
+//------------------------------------------------------GET ACCESSORS-----------------------------------------------
+/**
+* Returns the last entity to trip the trigger
+* @returns {Entity} The entity that last tripped the trigger
+*/
+Trigger.prototype.GetTrippedBy = function(){
+	if(this.TrippedBy != null){
+		return(this.TrippedBy);
+	}
+}
+/**
+* Returns an array of the triggers 4 corner points
+* @returns {Array[]} An array of 4 points, one for each corner of the Trigger
+*/
+Trigger.prototype.GetCorners = function(){
+	return(new Array(this.UL, this.UR, this.LL, this.LR));
+}
+/**
+* Returns the current type of the trigger
+* @returns {String} The current type of the trigger
+*/
+Trigger.prototype.GetType = function(){
+	if(this.Type != null){
+		return(this.Type);
+	}
+}
+/**
+* Returns the whether the current trigger is fire once or not
+* @returns {Boolean} The current trigger state (true) fire once or (false) trigger resets
+*/
+Trigger.prototype.GetFireOnce = function(){
+	if(this.FireOnce != null){
+		return(this.FireOnce);
+	}
+}
+/**
+* Returns the upper left hand position of the trigger
+* @returns {Array[]} The point Array X/Y for the upper left hand position
+*/
+Trigger.prototype.GetPosition = function(){
+	if(this.Position != null){
+		return(this.Position);
+	}
+}
+/**
+* Gets the current trigger dimensions
+* @returns {Array[]} The point Array width/height indicating the current trigger dimensions
+*/
+Trigger.prototype.GetDimensions = function(){
+  if(this.Dimensions != null){
+	return(this.Dimensions);
+  }
+}
+//---------------------------------------------------------------SET ACCESSORS------------------------------------------
+/**
+* Sets the current trigger to fire once(true) or resets(false)
+* @param {Boolean} Boolean true or false , fire once or reset to fire again
+*/
+Trigger.prototype.SetFireOnce = function(Boolean){
+	if(Boolean != null){
+		this.FireOnce = Boolean;
+	}
+}
+/**
+* Sets the upper left hand point position for the current trigger
+* @param {Array[]} Position Array with position information X/Y
+*/
+Trigger.prototype.SetPosition = function(Position){
+	if(Position != null){
+		this.Position = Position;
+	}
+}
+/**
+* Sets trigger dimensions
+* @param {Array[]} Dimensions Array with width/height information
+*/
+Trigger.prototype.SetDimensions = function(Dimensions){
+	if(Dimensions != null){
+		this.Dimension = Dimensions;
+	}
+}
+
+//-------------------------------------------------------------UTILITY FUNCTIONS-------------------------------------------
+/**
+* Sets the triggering entity and returns a reference to the current trigger
+* @param {Entity} Entity reference to the tripping Entity
+* @returns {Trigger} The current Trigger
+*/
+Trigger.prototype.Fire = function(Entity){
+	if(Entity != null){
+		this.TrippedBy = Entity;
+		return(this);
+	}
+}
+
+/**
+* @param {AudioTagHandle} Controller Handle to the current HTML5 audio element 
+*/
+Trigger.prototype.Spawn = function(){
+  
+}
+Trigger.prototype.Goal = function(){
+  
+}
+Trigger.prototype.GetItem = function(){
+  
+}
+Trigger.prototype.LoseItem = function(){
+  
+}
+Trigger.prototype.TakeDamage = function(){
+  
+}
+Trigger.prototype.DamageEntity = function(){
+  
+}
+Trigger.prototype.OpenDoor = function(){
+  
+}
+Trigger.prototype.CloseDoor = function(){
+  
+}
+Trigger.prototype.StartScript = function(){
+  
+}
+Trigger.prototype.StartAnimation= function(){
+  
+}
+Trigger.prototype.StopAnimation = function(){
+  
+}
+Trigger.prototype.RevealArea = function(){
+  
+}
+Trigger.prototype.HideArea = function(){
+  
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AIController.html">AIController</a></li><li><a href="ApplicationMenu.html">ApplicationMenu</a></li><li><a href="Audio.html">Audio</a></li><li><a href="AudioController.html">AudioController</a></li><li><a href="Debugger.html">Debugger</a></li><li><a href="EngineEvent.html">EngineEvent</a></li><li><a href="Entity.html">Entity</a></li><li><a href="EntityManager.html">EntityManager</a></li><li><a href="EventManager.html">EventManager</a></li><li><a href="Input.html">Input</a></li><li><a href="ResourceManager.html">ResourceManager</a></li><li><a href="ScreenMap.html">ScreenMap</a></li><li><a href="Stage.html">Stage</a></li><li><a href="Trigger.html">Trigger</a></li><li><a href="Updater.html">Updater</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 24 2018 11:40:32 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

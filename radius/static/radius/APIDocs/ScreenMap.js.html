@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: ScreenMap.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: ScreenMap.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*----------------------------------------------------------------------------------------------------------
+::“Copyright 2013 Clayton Burnett” 
+::This program is distributed under the terms of the GNU General Public License
+------------------------------------------------------------------------------------------------------------*/
+/**
+ * @fileOverview
+ *
+ * This file contains the ScreenMap object a data representation of a screen
+ *
+ * @author Clayton Burnett &lt;the82professional@hotmail.com>
+ */
+/**
+ * ###############################################################################################################
+ *                                              ScreenMap
+ */
+/**
+ * @class
+ * Class modeling a current display frame and objects rendered to screen
+ *
+ * @description
+ * An object describing all of the information about a display frame
+ **/
+/**
+* @constructor
+*/
+var ScreenMap = function(ResolutionX, ResolutionY, FrontCanvasContext, RearCanvasContext) {
+	this.bctx = RearCanvasContext; //The canvas context for the background screen buffer
+	this.ctx = FrontCanvasContext; //The canvas context for the foreground screen buffer
+	this.XResolution = ResolutionX; //Screen resolution X value in integer format
+	this.YResolution = ResolutionY; //Screen resolution Y value in integer format
+	this.Entities = new Array();	//The Array of current Application entities
+	this.BackgroundImages = new Array(); //The Current array of background Images
+	this.ZoomLevel = null;		//Current screen magnification level 
+	this.MenuSystem = new Array(); //Array of Menu layouts for the stage
+	this.DOM = new Array();
+	//Window Data Stubs for bug fix DE6
+	this.WindowHeight = window.innerHeight;
+	this.WindowWidth = window.innerWidth;
+	//Entity Scaling Data
+	this.Scale = 2;
+	
+	//Run On Engine Init
+	this.ctx.canvas.width = window.innerWidth;
+    	this.ctx.canvas.height = window.innerHeight;
+	this.bctx.canvas.width = window.innerWidth;
+    	this.bctx.canvas.height = window.innerHeight;
+	
+}
+//-----------------------------------------------------Get Methods-----------------------------------
+/**
+* Function to get the state of the menu option pointer
+* @return {Integer} Returns an integer value for the state of the menu pointer
+*/	
+ScreenMap.prototype.GetMenuPointerPosition = function(){
+	return(this.MenuSystem[0].GetCursorPosition());
+}
+/**
+* Function to return the first Menu in the menu system
+* @return {ApplicationMenu} Returns the first menu in the list of current stage menus
+*/	
+ScreenMap.prototype.GetMenu = function(){
+	if(this.MenuSystem[0] != null){
+		return(this.MenuSystem[0]);
+	}
+}
+//-----------------------------------------------------Set Methods-----------------------------------
+/**
+* Function to set the state of the menu option pointer
+* @param {Integer} Option The menu option to switch the cursor to
+*/
+ScreenMap.prototype.SetMenuPointerPosition = function(Option){
+	if(Option != null &amp;&amp; Option >= 0 &amp;&amp; Option &lt; this.MenuSystem[0].MenuOptions.length){
+		this.MenuSystem[0].ChangeCursorPosition(Option);
+	}
+}
+/**
+* Sets the current Menu system
+* @param {ApplicationMenu} Menu Adds the specified menu to the menu system for the stage, if passed null stops displaying the menu
+*/
+ScreenMap.prototype.SetMenuSystem = function(Menu){
+	if(Menu != null){
+		this.MenuSystem = new Array();
+		this.MenuSystem.push(Menu);
+	}else{
+	//Escape pressed again stop displaying menu
+		this.MenuSystem = new Array();
+	}
+}
+/**
+* Sets the current screen background image
+* @param {Image} BG An instance of the background image to set
+*/
+ScreenMap.prototype.SetBackgrounds = function(BG){
+	if(BG != null){
+		this.BackgroundImages = BG;
+	}
+}
+/**
+* Function to set the screenmap resolution
+* @param {Integer} ResolutionX The value for the x component of the display resolution
+* @param {Integer} ResolutionY The value for the y component of the display resolution
+*/
+ScreenMap.prototype.SetResolution = function(ResolutionX, ResolutionY){
+    if(ResolutionX != null &amp;&amp; ResolutionY != null){
+    this.XResolution = ResolutionX;
+    this.YResolution = ResolutionY;
+    }
+}
+//----------------------------------------------------Render Functions----------------------------------
+/**
+* Function to resize the canvas and zoom elements to fit the window maintains aspect ratio
+* @param {Array} PageDimensions Array of XY corresponding to the pages native pixel dimensions
+* @param {Array} WindowDimensions Array of XY corresponding to the current window dimensions
+*/
+ScreenMap.prototype.ScaleCanvas = function(PageDimensions, WindowDimensions) {
+	//------------------------------------------------------FULL SCREEN MODE ONLY SO FAR-------------------------	
+	//Save the canvas before performing transformation
+	this.ctx.save();
+	this.bctx.save();
+	//if the upper left is 0,0
+	var ratiox = (WindowDimensions[0] * 100) / PageDimensions[0] ;//WindowDimensions[0] - PageDimensions[0];
+	var ratioy = (WindowDimensions[1] * 100) / PageDimensions[1];
+	ratioy = +ratioy.toFixed(2);
+	ratiox = +ratiox.toFixed(2);
+	ratioy = ratioy / 100;
+	ratiox = 75.57 / 100;
+	//if were not scaled correctly	
+	if(ratiox != 100 || ratioy != 100){
+				this.ctx.scale(.50, .50);
+				this.bctx.scale(.50, .50);
+
+	}
+	this.ctx.restore();
+	this.bctx.restore();
+	//-------------------------------LEGACY CODE 6-26-2014----------------------------------------
+	//this.ctx.textBaseline = 'top';
+	//this.bctx.textBaseline = 'top';
+	//var height = window.innerHeight;
+	//Using the canvas context to get the canvas element and change the style
+	//var ratio = this.bctx.canvas.width/this.bctx.canvas.height;
+	//var width = height * ratio;
+	//this.bctx.canvas.style.width = width+'px';
+	//this.bctx.canvas.style.height = height+'px';
+	//this.ctx.canvas.style.width = width+'px';
+	//this.ctx.canvas.style.height = height+'px';
+	//Now Resize Entities
+	//Resize Font
+	//--------------Implement a write text to screen function that can dynamically change the font position or size
+}
+/**
+* Function to write text to an area of the screen
+* @param {String} Text The text string to write
+* @param {Array[]} Origin Integer Array specifying the origin of the text box
+* @param {Array[]} Dimensions Integer array indicating the width and height of the box
+* @param {String} Style The style to apply to the text (eg: italic bold Verdana)
+* @param {Integer} Size The size of the text
+* @param {String} Color The color of the text as a string (eg: black)
+* @param {DOMEntity} DOMEntity Optional Argument specifying a current DOM entity to write
+*/
+ScreenMap.prototype.WriteText = function(Text, Origin, Dimensions, Style, Size, Color, DOMEntity) {
+	//Format the text as a DOM element
+	//width, height, , , font, style
+	if(Text != null &amp;&amp; Dimensions != null &amp;&amp; Origin != null &amp;&amp; Style != null &amp;&amp; Size != null &amp;&amp; Color != null){
+		if(DOMEntity != null){
+	
+		}
+		this.DOM.push(new Array(Origin[0], Origin[1], Dimensions[0], Dimensions[1], Text, Style, Color));
+		return(0);
+	}
+}
+/**
+* Clears the current screen not needed with blitting
+*/
+ScreenMap.prototype.Clear = function(){
+	//--------------------------------------!!WARNING DEBUG MODE-------------------------------------------------------
+	//Clear does not properly clear the defined resolution using the single command below
+	//this.bctx.clearRect(0, 0, this.XResolution, this.YResolution);
+	this.bctx.clearRect(0, 0, 3000, 3000);
+}
+/**
+* Function to flip the displayed screens by swapping video buffer
+*/
+ScreenMap.prototype.Blit = function(){
+	if(this.bctx != null &amp;&amp; this.ctx != null){
+		var offscreen_data = this.bctx.getImageData(0, 0, this.XResolution, this.YResolution);
+		this.ctx.putImageData(offscreen_data, 0, 0);
+	}
+}
+/**
+* Function to wrap the loaded text
+* @param {CanvasContext} context the current Canvas context to display to
+* @param {String} text The text to display within the DOM element
+* @param {Integer} x The starting x position in pixels
+* @param {Integer} y The starting y position in pixels
+* @param {Integer} maxWidth The maximum width to use before wrap
+* @param {Integer} lineHeight The height of the display text
+*/
+ScreenMap.prototype.WrapText = function(context, text, x, y, maxWidth, lineHeight){
+	var words = text.split(' ');
+	var line = '';
+	for(var n = 0; n &lt; words.length; n++) {
+		var testLine = line + words[n] + ' ';
+		var metrics = context.measureText(testLine);
+		var testWidth = metrics.width;
+		if (testWidth > maxWidth &amp;&amp; n > 0) {
+			context.fillText(line, x, y);
+			line = words[n] + ' ';
+			y += lineHeight;
+		}
+		else {
+			line = testLine;
+		}
+	}
+	context.textAlign = "start";
+	//Account for display metrics
+	context.fillText(line, x, y);
+	//context.fillText(text, x, y);
+}
+/**
+* Function to render the map to the background canvas and blit
+*/
+ScreenMap.prototype.RenderToCanvas = function(){
+       for(var z=0; z&lt;this.BackgroundImages.length; z++){
+       	if(this.BackgroundImages[z].length > 1){
+       		this.bctx.drawImage(this.BackgroundImages[z][0], this.BackgroundImages[z][1], this.BackgroundImages[z][2]);
+       	}else{
+       		this.bctx.drawImage(this.BackgroundImages[z][0], 0, 0);
+       	}
+       }
+       /*this.bctx.drawImage(this.BackgroundImages[0], 0, 0);
+	   if(this.BackgroundImages.length > 1){
+       this.bctx.drawImage(this.BackgroundImages[1], 50, 200);
+	   }
+	    if(this.BackgroundImages.length > 2){
+       this.bctx.drawImage(this.BackgroundImages[2], 250, 350);
+	   this.bctx.drawImage(this.BackgroundImages[3], 850, 200);
+	   this.bctx.drawImage(this.BackgroundImages[4], -20, 60);
+	   }*/
+       //Render Entities
+       //Make sure there are entities
+	   if(this.DOM != null){
+		 for(var i = 0; i &lt;= this.DOM.length - 1; i++){
+           //ALL LINKS FOR NOW
+		    this.bctx.fillStyle = this.DOM[i][6];
+			this.bctx.font = this.DOM[i][5];
+			this.ctx.fillStyle = this.DOM[i][6];
+			this.ctx.font = this.DOM[i][5];
+			this.WrapText(this.bctx, this.DOM[i][4], this.DOM[i][0], this.DOM[i][1], this.DOM[i][2], this.DOM[i][3]);
+			//this.bctx.fillText(this.DOM[i][4], this.DOM[i][0], this.DOM[i][1]);
+        } 
+	   }
+	   
+       if(this.Entities != null){
+        for(var i = 0; i &lt;= this.Entities.length - 1; i++){
+            if(this.Entities[i].SpriteSheet != null){
+                //We have an Image to display so show it
+                //Render Sprites
+                this.DrawSprite(this.bctx, this.Entities[i]);
+            }
+        }
+       }
+    //}
+	//Account for a closed menu and a freshly constructed system
+	if(this.MenuSystem != null &amp;&amp; this.MenuSystem.length != 0){
+		for(var i = 0; i &lt; this.MenuSystem.length; i++){
+			this.MenuSystem[i].Display(this.bctx);
+		}
+	}
+	//Blit the image to screen
+	this.Blit();
+}
+/**
+* Render Event; Updates Entities and renders to canvas
+* @param {Entity[]} EntityList Updated Entity List to process
+* @param {Array[]} DOMList Updated DOM List to process
+*/
+ScreenMap.prototype.RenderCycle = function(EntityList, DOMList) {
+   // this.Resize();
+	if(this.DOM == null || this.DOM.length == 0){
+		//Pulls the DOM list from the database if there is no loaded DOM otherwise no DB load
+		this.UpdateDOM(DOMList);
+	}
+	this.UpdateEntities(EntityList);
+    this.RenderToCanvas();
+}
+/**
+* Function to draw a specified Entity on the background canvas for blitting
+* @param {CanvasContext} bctx Canvas context reference to the background canvas
+* @param {Entity} Entity A reference to the entity to render
+*/
+ScreenMap.prototype.DrawSprite = function(bctx, Entity){
+     if(bctx != null &amp;&amp; Entity != null){
+		//img,x,y,width,height
+		var position = Entity.GetPosition();
+		var xcord = position[0];
+		var ycord = position[1];
+		var Dimensions = Entity.GetImageDimensions();
+		var width = Dimensions[0];
+		var height = Dimensions[1];
+		var Vec = Entity.GetVelocity();
+		var Sprite = Entity.GetSpriteSheet();
+		var CurrentFrame = Entity.GetFrame();
+		var EntType = Entity.GetType();
+		//-----------------------------------------Rendering Rules--------------------------------
+		switch(EntType){
+			case "TVZ_pistolBullet":
+				bctx.drawImage(Sprite, xcord, ycord, width, height);
+			break;
+			case "TVZ_rifleBullet":
+				bctx.drawImage(Sprite, xcord, ycord, width, height);
+			break;
+			case "TVZ_shotgunBullet":
+				bctx.drawImage(Sprite, xcord, ycord, width, height);
+			break;
+			case "Wall":
+				bctx.drawImage(Sprite, xcord, ycord, width, height);
+			break;
+			case "Door":
+				bctx.drawImage(Sprite, xcord, ycord, width, height);
+			break;
+			case "Default":
+				bctx.drawImage(Sprite, xcord, ycord, width, height);
+			break;
+			default:
+				if(EntType == "player1" || EntType == "player2" || EntType == "zombie"){
+					//Display a different image based upon the direction of travel
+					switch(Vec[0]){
+						case 'n':
+							//xrow = 5, 4 cells
+							this.Animate('n', Entity, bctx);
+						break;
+						case 'ne':
+							//xrow = 0, 4 cells
+							this.Animate('ne', Entity, bctx);
+						break;
+						case 'e':
+							//xrow = 6, 6 cells
+							this.Animate('e', Entity, bctx);
+						break;
+						case 'se':
+							//xrow = 1, 4 cells
+							this.Animate('se', Entity, bctx);
+						break;
+						case 's':
+							//xrow = 4, 4 cells
+							this.Animate('s', Entity, bctx);
+						break;
+						case 'sw':
+							//xrow = 3, 4 cells
+							this.Animate('sw', Entity, bctx);
+						break;
+						case 'w':
+							//xrow = 7, 6 cells
+							this.Animate('w', Entity, bctx);
+						break;
+						case 'nw':
+							//xrow = 2, 4 cells
+							this.Animate('nw', Entity, bctx);
+						break;
+						case 'c':
+							Entity.SetFrame(0);
+							bctx.drawImage(Sprite,0, 128, width, height, xcord, ycord, width, height);
+						break;
+						default:
+							alert("Screenmap line 168 cannot draw image");
+						break;
+					}
+				}
+			break;
+		}
+    }else{
+		console.error("DrawSprite passed a null Entity");
+	}
+}
+//-----------------------------------------------Private Utility Functions-------------------------------
+/**
+* Function to caluculate the number of Entity positions on the map
+* @return {Integer} Returns the number of entity slots in the current ScreenMap
+*/	
+ScreenMap.prototype.CalculateSlots = function(){
+    if(this.NumCells != null &amp;&amp; this.XResolution != null &amp;&amp; this.YResolution != null){
+    this.EntitySlots = (this.XResolution*this.YResolution)/this.NumCells;
+    return(this.EntitySlots);
+    }
+}
+/**
+* @param {Array[]} DOMList Updates the list of DOM Elements
+*/
+ScreenMap.prototype.UpdateDOM = function(DOMList){
+    this.DOM = DOMList;
+}
+/**
+* @param {TVZ_Entity[]} EntityList Updates the list of entities in the ScreenMap from a supplied Entity list
+*/
+ScreenMap.prototype.UpdateEntities = function(EntityList){
+    this.Entities = EntityList;
+}
+/**
+* Function to animate an entity and draw the correct animation frame 
+* @param {String} Direction String indicating the walking animation direction
+* @param {Entity} Entity A reference to the entity to render
+* @param {Entity} bctx A reference to the background canvas context
+*/
+ScreenMap.prototype.Animate = function(Direction, Entity, bctx){
+	if(Direction != null &amp;&amp; Entity != null &amp;&amp; bctx != null){
+		var Cells = Entity.GetCells(Direction);
+		var position = Entity.GetPosition();
+		var xcord = position[0];
+		var ycord = position[1];
+		var Sprite = Entity.GetSpriteSheet();
+		var CurrentFrame = Entity.GetFrame();
+		var ID = Entity.GetImageDimensions();
+		var AnimationDelay = 80;
+		var CellOrder = Entity.GetCellOrder();
+		switch(Direction){
+				case 'n':
+					var Offset = 0;
+				break;
+				case 'ne':
+					var Offset = 1;
+				break;
+				case 'e':
+					var Offset = 2;
+				break;
+				case 'se':
+					var Offset = 3;
+				break;
+				case 's':
+					var Offset = 4;
+				break;
+				case 'sw':
+					var Offset = 5;
+				break;
+				case 'w':
+					var Offset = 6;
+				break;
+				case 'nw':
+					var Offset = 7;
+				break;
+		}
+		if(Entity.IsAnimating() == true){
+			if(CurrentFrame >= Cells){
+				Entity.SetFrame(0);
+			}
+			if(CurrentFrame &lt; Cells){
+				bctx.drawImage(Sprite,CurrentFrame * ID[0], ID[1] * CellOrder[Offset], ID[0], ID[1], xcord, ycord, ID[0], ID[1]);
+				//Update the frame only if a certain amount of time has passed
+				var previous = Entity.GetTimestamp();
+				var next = Math.round(new Date().getTime());
+				if(previous + AnimationDelay &lt; next){
+					CurrentFrame++;
+					if(CurrentFrame >= Cells){
+						Entity.SetFrame(0);
+						Entity.UpdateModified();
+					}else{
+						Entity.SetFrame(CurrentFrame);
+						Entity.UpdateModified();
+					}
+				}
+			}
+		}else{
+			Entity.SetFrame(0);
+			bctx.drawImage(Sprite,CurrentFrame * ID[0], ID[1] * CellOrder[Offset], ID[0], ID[1], xcord, ycord, ID[0], ID[1]);
+		}
+	}
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AIController.html">AIController</a></li><li><a href="ApplicationMenu.html">ApplicationMenu</a></li><li><a href="Audio.html">Audio</a></li><li><a href="AudioController.html">AudioController</a></li><li><a href="Debugger.html">Debugger</a></li><li><a href="EngineEvent.html">EngineEvent</a></li><li><a href="Entity.html">Entity</a></li><li><a href="EntityManager.html">EntityManager</a></li><li><a href="EventManager.html">EventManager</a></li><li><a href="Input.html">Input</a></li><li><a href="ResourceManager.html">ResourceManager</a></li><li><a href="ScreenMap.html">ScreenMap</a></li><li><a href="Stage.html">Stage</a></li><li><a href="Trigger.html">Trigger</a></li><li><a href="Updater.html">Updater</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 24 2018 11:40:32 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

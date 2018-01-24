@@ -28,6 +28,7 @@ var Debugger = function(hwnd, runtime) {
 	this.runtimeHandle = runtime; //A handle to the runtime under test
 	
 	this.Active = false; //private variable indicating whether the runtime is operational
+	this.testParam = null; //Global storage area for most recent test parameter
 	
 	
 }
@@ -53,10 +54,23 @@ Debugger.prototype.getWindow = function(){
 Debugger.prototype.getRuntime = function(){
 		return(this.runtimeHandle);
 }
+//----------------------------------------------------Set Methods---------------------------------------
+/**
+* Private function to store a global reference to the current test parameter
+* @param {String} parameter a reference to the generic parameter to store
+* @return {Boolean} Returns 0 on success
+*/	
+Debugger.prototype.setTestParam = function(parameter){
+	
+		return(0);
+}
+
+
 //---------------------------------------------------Utility Methods---------------------------------------
 
 /**
 * Function to activate the debugger runtime
+* @param {Boolean} flag pass true for ON and false for OFF
 * @return {Integer} Returns a status code indicating (0) success or (1) failure
 */	
 Debugger.prototype.toggleRuntime = function(flag){

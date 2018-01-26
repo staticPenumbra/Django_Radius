@@ -59,7 +59,6 @@ Updater.prototype.SetPaused = function(Flag) {
 * @param {AudioController} AudioController Handle to the Audio Controller
 */
 Updater.prototype.ProcessCycle = function(EventManager, EntityManager, ScreenMap, ResourceManager, AudioController) {
-	if(EventManager != null && EntityManager != null && ScreenMap != null && ResourceManager != null){
 		var time = new Date();
 		//Proceed to the next cycle if any time has passed since the last run(Here we could throttle the pace of the Application)
 		if(time.getTime() > this.getMilliseconds() + this.ApplicationSpeedThrottle){
@@ -69,7 +68,6 @@ Updater.prototype.ProcessCycle = function(EventManager, EntityManager, ScreenMap
 			//Update the Cycle clock
 			this.Cycle = time;
 	   }
-	}
 }
 //-------------------------------------UTILITY FUNCTIONS-------------------------------
 /**

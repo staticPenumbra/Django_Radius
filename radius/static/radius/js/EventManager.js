@@ -56,56 +56,22 @@ var EventManager = function(FrontCanvas, FrontCanvasContext, RearCanvas, RearCan
 	this.OldDimensionsH = this.FrontCanvasHeight;
 	this.StageIndex = 0;
 	this.DebugOn = 0; //Turns on and off  the test Framework
-}
-//---------------------------------------------------------------------TEST CODE-------------------------------------------------------------
-/**
-* Registers test functions
-*/
-EventManager.prototype.RegisterTestFunctions = function(){
 	if(this.DebugOn == 1){
-		//EventManager Calls
-		this.TestHandler.RegisterFunction("ChangeStage");
-		this.TestHandler.RegisterFunction("GetCurrentStage");
-		this.TestHandler.RegisterFunction("SetUserInputs");
-		this.TestHandler.RegisterFunction("SetStartingInputs");
-		this.TestHandler.RegisterFunction("StartEngine");
-		this.TestHandler.RegisterFunction("CloseMenu");
-		this.TestHandler.RegisterFunction("ShowTitleMenu");
-		this.TestHandler.RegisterFunction("keyUp");
-		this.TestHandler.RegisterFunction("mouseClick");
-		this.TestHandler.RegisterFunction("mouseMove");
-		this.TestHandler.RegisterFunction("keyDown");
-		this.TestHandler.RegisterFunction("OpenMenu");
-		this.TestHandler.RegisterFunction("LoadMusic");
-		this.TestHandler.RegisterFunction("CacheTriggers");
-		this.TestHandler.RegisterFunction("LoadSounds");
-		this.TestHandler.RegisterFunction("Codes");
-		this.TestHandler.RegisterFunction("MenuHandler");
-		this.TestHandler.RegisterFunction("RenderToScreen");
-		this.TestHandler.RegisterFunction("RunEvents");
-		this.TestHandler.RegisterFunction("CreateTriggerEvent");
-		this.TestHandler.RegisterFunction("Preprocess");
-		this.TestHandler.RegisterFunction("RunCycle");
-		this.TestHandler.RegisterFunction("RecalcElements");
-		this.TestHandler.RegisterFunction("ElementSelected");
-		this.TestHandler.RegisterFunction("AddMouseEvent");
-		this.TestHandler.RegisterFunction("AddKeyEvent");
-		this.TestHandler.RegisterFunction("AddEvent");
-		this.TestHandler.RegisterFunction("DeleteEvent");
-	}			
+		this.DebugHandle = new Debugger(this.WindowHandle, this); //Handle to an instance of the debugger
+	}else{
+		this.DebugHandle = null;
+	}
 }
 //---------------------------------------------------------------------GET ACCESSORS--------------------------------------------------
 /**
 * Returns the current stage
-* @return {Stage} Returns a reference to the current stage
+* @return {Stage} Returns a reference to the current stage or null if not defined
 */
 EventManager.prototype.GetCurrentStage = function(){
 	if(this.DebugOn == 1){
-		this.TestHandler.IncrementFunctionCall("GetCurrentStage");
+		this.DebugHandle.ValidateStage(this.CurrentStage);
 	}	
-	if(this.CurrentStage != null){
-		return(this.CurrentStage);
-	}
+	return(this.CurrentStage);
 }
 //---------------------------------------------------------------------SET ACCESSORS--------------------------------------------------
 /**
@@ -145,29 +111,30 @@ EventManager.prototype.SetStartingInputs = function(){
 //---------------------------------------------------------------------UTILITY FUNCTIONS----------------------------------------------
 /**
 * When all parameters are set then attempt to start the application with this function
+* @param {Integer} PageNumber Initial page if undefined will default to 1
 */
-EventManager.prototype.StartEngine = function(){
-	this.RegisterTestFunctions();
-	if(this.DebugOn == 1){
-		this.TestHandler.IncrementFunctionCall("StartEngine");
-	}	
-	this.AudioController.SetAvailableChannels(this.AudioPlayers);
-	//Set the canvas to fit the screen
-	//this.ScreenMap.ScaleCanvas();
-	//We need to cache the Database
-
-	
-	this.ChangeStage(this.StageIndex);
-	this.SetStartingInputs();
+EventManager.prototype.StartEngine = function(PageNumber){
+	if(DebugOn == 1){
+		this.AudioController.SetAvailableChannels(this.AudioPlayers);
+		if(PageNumber){
+			this.StageIndex = PageNumber;
+		}else{
+			this.WindowHandle.alert("Warning In StartEngine: no PageNumber given defaulting to 1")
+			this.StageIndex = 1;
+		}
+		this.ChangeStage(this.StageIndex);
+		this.SetStartingInputs();
+	}else{
+		this.StageIndex = PageNumber;
+		this.ChangeStage(this.StageIndex);
+		this.SetStartingInputs();
+	}
 }
 /**
 * Changes The current scope of the application and starts a different stage
 * @param {Integer} EntryNumber Stage number to change to
 */
 EventManager.prototype.ChangeStage = function(EntryNumber){
-	if(this.DebugOn == 1){
-		this.TestHandler.IncrementFunctionCall("ChangeStage");
-	}	
 	this.CurrentStage = EntryNumber;
 	//Change Canvas Screen Resolution
 	var Dimension = this.ResourceManager.GetPageDimensions(EntryNumber);
@@ -396,9 +363,6 @@ EventManager.prototype.RenderToScreen = function(){
 * Cycles through the list of events and tries running each of the procedures then removes them from the update list
 */
 EventManager.prototype.RunEvents = function() {
-	if(this.DebugOn == 1){
-		this.TestHandler.IncrementFunctionCall("RunEvents");
-	}	
         //Make sure to preprocess event priorities and pause updates prior to running
         this.Preprocess();
         //this.UpdateEntities();
@@ -539,9 +503,7 @@ EventManager.prototype.CreateTriggerEvent = function(Trigger){
 * Preprocess the list of current updates to fix backup/interrupt and priority changes
 */
 EventManager.prototype.Preprocess = function(){
-	if(this.DebugOn == 1){
-		this.TestHandler.IncrementFunctionCall("Preprocess");
-	}	
+	
 	//Check triggers
 	var FiredTriggers = this.EntityManager.CheckTriggers(this.Triggers);
 	//Create events for each trigger
@@ -581,13 +543,15 @@ EventManager.prototype.Preprocess = function(){
 * Runs the main application loop
 */
 EventManager.prototype.RunCycle = function(){
-	if(this.DebugOn == 1){
-		this.TestHandler.IncrementFunctionCall("RunCycle");
-	}	
-	if(this.Updater != null){
-		//For Resize events
-		this.Updater.ProcessCycle(this, this.EntityManager, this.ScreenMap, this.ResourceManager, this.AudioController);
-	}
+		if(this.DebugOn == true){
+			this.DebugHandle.setTestParam(this.EntityManager);
+			this.DebugHandle.setTestParam(this.ScreenMap);
+			this.DebugHandle.setTestParam(this.ResourceManager);
+			this.DebugHandle.setTestParam(this.AudioController);
+			this.Updater.ProcessCycle(this, this.EntityManager, this.ScreenMap, this.ResourceManager, this.AudioController);
+		}else{
+			this.Updater.ProcessCycle(this, this.EntityManager, this.ScreenMap, this.ResourceManager, this.AudioController);
+		}
 }
 /**
 * Recalculates screen elements based on window resolution

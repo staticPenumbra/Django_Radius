@@ -54,6 +54,17 @@ Debugger.prototype.getWindow = function(){
 Debugger.prototype.getRuntime = function(){
 		return(this.runtimeHandle);
 }
+/**
+* Function to return a handle to the current Test Parameter
+* @return {Parameter} Returns a handle to the current test Parameter or 1 if undefined
+*/	
+Debugger.prototype.getTestParameter = function(){
+	if(this.testParam != null){
+		return(this.testParam);
+	}
+	this.getWindow().alert("Error in getTestParameter(): Parameter undefined");
+	return(1);
+}
 //----------------------------------------------------Set Methods---------------------------------------
 /**
 * Private function to store a global reference to the current test parameter
@@ -61,13 +72,25 @@ Debugger.prototype.getRuntime = function(){
 * @return {Boolean} Returns 0 on success
 */	
 Debugger.prototype.setTestParam = function(parameter){
-	
+	if(parameter != null){
+		this.testParam = parameter;
 		return(0);
+	}
+	this.getWindow().alert("Error in setTestParam(): parameter is undefined");
+	return(1);
 }
 
 
 //---------------------------------------------------Utility Methods---------------------------------------
-
+/**
+* function to validate a Stage Datatype and return any definition errors
+* @param {Stage} Reference to the Stage being validated
+* @return {Boolean} Returns 0 on pass flags 1 for validation error
+*/	
+Debugger.prototype.ValidateStage = function(Stage){
+		this.setTestParam(Stage);
+		return(0);
+}
 /**
 * Function to activate the debugger runtime
 * @param {Boolean} flag pass true for ON and false for OFF

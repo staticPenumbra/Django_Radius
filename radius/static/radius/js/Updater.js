@@ -51,23 +51,18 @@ Updater.prototype.SetPaused = function(Flag) {
 }
 //----------------------------------------------API Methods------------------------------------------
 /**
-* Checks to see whether it is time for a new cycle and then runs the next iteration of events
-* @param {EventManager} EventManager Handle to the event manager managing Application events
-* @param {EntityManager} EntityManager Handle to the entity manager managing Application entities
-* @param {ScreenMap} ScreenMap handle to the current display interface
-* @param {ResourceManager} ResourceManager Handle to the Application resource manager
-* @param {AudioController} AudioController Handle to the Audio Controller
+* Checks to see whether it is time for a new cycle and then returns whether it is time for an update
+* @return {Boolean} Returns true for time to update or false for no update
 */
-Updater.prototype.ProcessCycle = function(EventManager, EntityManager, ScreenMap, ResourceManager, AudioController) {
+Updater.prototype.ProcessCycle = function() {
 		var time = new Date();
 		//Proceed to the next cycle if any time has passed since the last run(Here we could throttle the pace of the Application)
 		if(time.getTime() > this.getMilliseconds() + this.ApplicationSpeedThrottle){
-			EventManager.RunEvents();
-			EntityManager.UpdateEntities();
-			EventManager.RenderToScreen();
 			//Update the Cycle clock
 			this.Cycle = time;
-	   }
+			return(true);
+		}
+		return(false);
 }
 //-------------------------------------UTILITY FUNCTIONS-------------------------------
 /**

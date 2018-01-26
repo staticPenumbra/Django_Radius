@@ -543,14 +543,20 @@ EventManager.prototype.Preprocess = function(){
 * Runs the main application loop
 */
 EventManager.prototype.RunCycle = function(){
+		var updateTime = this.Updater.ProcessCycle();
 		if(this.DebugOn == true){
 			this.DebugHandle.setTestParam(this.EntityManager);
 			this.DebugHandle.setTestParam(this.ScreenMap);
 			this.DebugHandle.setTestParam(this.ResourceManager);
 			this.DebugHandle.setTestParam(this.AudioController);
-			this.Updater.ProcessCycle(this, this.EntityManager, this.ScreenMap, this.ResourceManager, this.AudioController);
-		}else{
-			this.Updater.ProcessCycle(this, this.EntityManager, this.ScreenMap, this.ResourceManager, this.AudioController);
+		}
+		if(updateTime == true){
+			//Run updates	
+			this.RunEvents();
+			this.EntityManager.UpdateEntities();
+			this.RenderToScreen();
+			//Reset
+			updateTime = false;
 		}
 }
 /**

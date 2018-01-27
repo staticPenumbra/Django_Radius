@@ -149,7 +149,7 @@ EventManager.prototype.ChangeStage = function(EntryNumber){
 	this.EntityManager.Reset();
 	this.Entities = new Array();
 	this.Entities = this.EntityManager.LoadEntities(EntryNumber, this.ResourceManager, this.UserInputs);
-	this.ScreenMap.UpdateEntities(this.Entities);
+	this.ScreenMap.SetEntities(this.Entities);
 	if(EntryNumber == 0){
 		//Display Title Menu
 		//this.ShowTitleMenu();
@@ -365,7 +365,6 @@ EventManager.prototype.RenderToScreen = function(){
 EventManager.prototype.RunEvents = function() {
         //Make sure to preprocess event priorities and pause updates prior to running
         this.Preprocess();
-        //this.UpdateEntities();
         if(this.StageIndex > 12){
 			this.StageIndex = 0;
 	}else{

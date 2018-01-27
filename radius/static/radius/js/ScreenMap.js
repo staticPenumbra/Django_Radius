@@ -280,7 +280,7 @@ ScreenMap.prototype.RenderCycle = function(EntityList, DOMList) {
 		//Pulls the DOM list from the database if there is no loaded DOM otherwise no DB load
 		this.UpdateDOM(DOMList);
 	}
-	this.UpdateEntities(EntityList);
+	this.SetEntities(EntityList);
     this.RenderToCanvas();
 }
 /**
@@ -392,7 +392,7 @@ ScreenMap.prototype.UpdateDOM = function(DOMList){
 /**
 * @param {TVZ_Entity[]} EntityList Updates the list of entities in the ScreenMap from a supplied Entity list
 */
-ScreenMap.prototype.UpdateEntities = function(EntityList){
+ScreenMap.prototype.SetEntities = function(EntityList){
     this.Entities = EntityList;
 }
 /**

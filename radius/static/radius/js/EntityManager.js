@@ -355,10 +355,12 @@ EntityManager.prototype.CheckDead = function(Names){
 	return(true);
 	}
 }
+//`````````````````````````````````````````````1/27/2018`````````````````````````````````````
+//`````````````````````````` Entity Manager needs to be fixed and debug support added.  Start here
+//`````````````````````````````````````````````````````````````````````````````````````````````````
 /**
 * Function to update all of the Entity positions every cycle
-* @param {String[]} Names An array of entity type name strings to check
-* @return {Boolean} Flag indicating whether an instance of the name was found or not
+* @return {Boolean} Flag indicating whether the update was successful
 */
 EntityManager.prototype.UpdateEntities = function(){
     if(this.Entities != null && this.Entities.length > 0){

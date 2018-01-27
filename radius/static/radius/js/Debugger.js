@@ -83,6 +83,19 @@ Debugger.prototype.setTestParam = function(parameter){
 
 //---------------------------------------------------Utility Methods---------------------------------------
 /**
+* Function to validate a passed function
+* @param {FunctionHandle} func Reference to the function being validated
+* @return {String} Returns a predefined error message if error otherwise 0 for pass
+*/	
+Debugger.prototype.FDebug = function(func){
+		//Test return without arguments
+		var returnTest = func();
+		if(!returnTest){
+			return("FDebug Error: Function with 0 arguments did not return a value");
+		}
+		return(0);
+}
+/**
 * function to validate a Stage Datatype and return any definition errors
 * @param {Stage} Reference to the Stage being validated
 * @return {Boolean} Returns 0 on pass flags 1 for validation error
